@@ -2,159 +2,149 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>$BinanceMaxxing</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Flappy Maxxer - BinanceMaxxing Game</title>
     <link rel="icon" type="image/png" href="hero-mascot.png">
-    <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .game-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .game-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .game-header h1 {
+            color: #F0B90B;
+            font-size: 2.5rem;
+            font-weight: 800;
+            text-shadow: 0 0 20px rgba(240, 185, 11, 0.5);
+        }
+
+        .game-header p {
+            color: #888;
+            font-size: 1rem;
+            margin-top: 5px;
+        }
+
+        #gameCanvas {
+            border: 4px solid #F0B90B;
+            border-radius: 12px;
+            box-shadow: 0 0 30px rgba(240, 185, 11, 0.3);
+            cursor: pointer;
+        }
+
+        .score-display {
+            position: absolute;
+            top: 130px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #fff;
+            font-size: 3rem;
+            font-weight: 900;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .game-ui {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .game-btn {
+            background-color: #F0B90B;
+            color: #000;
+            font-size: 1.2rem;
+            font-weight: 700;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .game-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(240, 185, 11, 0.5);
+        }
+
+        .high-score {
+            color: #F0B90B;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .instructions {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 500px) {
+            .game-header h1 {
+                font-size: 1.8rem;
+            }
+
+            #gameCanvas {
+                border-width: 3px;
+            }
+
+            .game-btn {
+                padding: 12px 30px;
+                font-size: 1rem;
+            }
+
+            .score-display {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-content">
-            <div class="mascot-container">
-                <img src="hero-mascot.png" alt="BinanceMaxxing Mascot" class="hero-mascot">
-            </div>
-            <img src="logo.png" alt="Binancemaxxing" class="hero-logo">
-            <p class="hero-subtitle">How To Be A Maxxer</p>
-            <div class="contract-address" onclick="copyAddress()">
-                <span id="contract-text">CA: 0xc0820faa1e8dd6dfad6884b1a1ef30e80c754444</span>
-                <svg class="copy-icon" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
-                </svg>
-            </div>
+    <div class="game-container">
+        <div class="game-header">
+            <h1>Flappy Maxxer</h1>
+            <p>How far can you maxx?</p>
         </div>
-    </section>
 
-    <script>
-        function copyAddress() {
-            const text = document.getElementById('contract-text').innerText.replace('CA: ', '');
-            navigator.clipboard.writeText(text).then(() => {
-                const el = document.querySelector('.contract-address');
-                el.classList.add('copied');
-                setTimeout(() => el.classList.remove('copied'), 2000);
-            });
-        }
-    </script>
+        <div class="score-display" id="scoreDisplay">0</div>
+        <canvas id="gameCanvas"></canvas>
 
-    <!-- Game Section -->
-    <section class="game-section">
-        <h2 class="game-title">Play Flappy Maxxer</h2>
-        <p class="game-subtitle">Click or press SPACE to flap</p>
-        <div class="game-wrapper">
-            <div class="score-display" id="scoreDisplay">0</div>
-            <canvas id="gameCanvas"></canvas>
+        <div class="high-score" id="highScore">High Score: 0</div>
+        <p class="instructions">Click or press SPACE to flap</p>
+
+        <div class="game-ui">
+            <a href="index.html" class="game-btn">Back to Site</a>
         </div>
-        <p class="high-score" id="highScore">High Score: 0</p>
-    </section>
+    </div>
 
-    <!-- Social Icons -->
-    <section class="social-icons">
-        <a href="https://x.com/i/communities/2028147465107697923" target="_blank" class="social-icon" aria-label="X (Twitter)">
-            <svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28">
-                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-            </svg>
-        </a>
-        <a href="https://dexscreener.com/bsc/0x07d34e7d02811831165450fba08b86d0fd7aad68" target="_blank" class="social-icon" aria-label="DexScreener">
-            <svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28">
-                <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/>
-                <circle cx="12" cy="12" r="4" fill="currentColor"/>
-            </svg>
-        </a>
-    </section>
-
-    <!-- Who is a Maxxer Section -->
-    <section class="who-section">
-        <h2>Who is a Maxxer?</h2>
-        <p class="who-description">
-            A Maxxer is anyone who helps build, support, or grow the BinanceMaxxing ecosystem — from
-            team members and degens to community users worldwide. Together, they embody the
-            values that drive BinanceMaxxing forward:
-        </p>
-
-        <div class="values-grid">
-            <div class="value-card">
-                <h3>Degen-First</h3>
-                <p>Always put degens at the heart of every decision and action</p>
-            </div>
-            <div class="value-card">
-                <h3>Integrity</h3>
-                <p>Build trust through honesty, transparency, and ethical conduct</p>
-            </div>
-            <div class="value-card">
-                <h3>Innovation</h3>
-                <p>Pioneer new ideas that shape the future of crypto and memes</p>
-            </div>
-            <div class="value-card">
-                <h3>Teamwork</h3>
-                <p>Collaborate with respect and unity to achieve moon goals</p>
-            </div>
-            <div class="value-card">
-                <h3>Commitment</h3>
-                <p>Stay dedicated to BinanceMaxxing's mission and global community</p>
-            </div>
-            <div class="value-card">
-                <h3>Passion</h3>
-                <p>Bring energy and belief in crypto's power to change the world</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Action Buttons -->
-    <section class="action-buttons">
-        <a href="#" class="action-btn">Maxxing<br>Glossary</a>
-        <a href="#" class="action-btn">Maxxers<br>Memes</a>
-        <a href="game.html" class="action-btn">Play<br>Game</a>
-    </section>
-
-    <!-- Degen Banner -->
-    <section class="degen-banner">
-        <img src="degen-banner.png" alt="For Degens Who Only Know Maxxing">
-    </section>
-
-
-    <!-- Tweet Section -->
-    <section class="tweet-section">
-        <div class="tweet-container">
-            <div class="tweet-placeholder">
-                <p>Maxxers are hardcorе</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Buy Section -->
-    <section class="buy-section">
-        <h2>Buy</h2>
-        <ol class="buy-steps">
-            <li>Download and install metamask</li>
-            <li>Get some BNB</li>
-            <li>Go to Pancakeswap</li>
-            <li>BUY $BinanceMaxxing</li>
-        </ol>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <h2 class="footer-title">$BinanceMaxxing</h2>
-        <p class="footer-copyright">2026 All Maxxers Reserved</p>
-        <div class="footer-socials">
-            <a href="https://x.com/i/communities/2028147465107697923" target="_blank" aria-label="X (Twitter)">
-                <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                </svg>
-            </a>
-            <a href="https://dexscreener.com/bsc/0x07d34e7d02811831165450fba08b86d0fd7aad68" target="_blank" aria-label="DexScreener">
-                <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-                    <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/>
-                    <circle cx="12" cy="12" r="4" fill="currentColor"/>
-                </svg>
-            </a>
-        </div>
-    </footer>
-
-    <!-- Game Script -->
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
@@ -164,7 +154,7 @@
         // Responsive canvas size
         function setCanvasSize() {
             const maxWidth = Math.min(1000, window.innerWidth - 40);
-            const maxHeight = Math.min(450, window.innerHeight * 0.5);
+            const maxHeight = Math.min(500, window.innerHeight - 250);
             canvas.width = maxWidth;
             canvas.height = maxHeight;
         }
@@ -177,7 +167,7 @@
         let score = 0;
         let highScore = localStorage.getItem('flappyMaxxerHighScore') || 0;
         let gameStartTimer = 0;
-        const graceFrames = 30;
+        const graceFrames = 30; // Grace period at start
         highScoreDisplay.textContent = `High Score: ${highScore}`;
 
         // Cat properties
@@ -204,6 +194,10 @@
         const catImage = new Image();
         catImage.src = 'hero-mascot.png';
 
+        // Load coin image for pipes
+        const coinImage = new Image();
+        coinImage.src = 'hero-mascot.png';
+
         // Colors
         const colors = {
             background: '#0a0a0a',
@@ -214,8 +208,11 @@
         };
 
         function drawBackground() {
+            // Dark background
             ctx.fillStyle = colors.background;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Stars
             ctx.fillStyle = '#F0B90B';
             for (let i = 0; i < 30; i++) {
                 const x = (i * 47 + score * 0.5) % canvas.width;
@@ -225,8 +222,12 @@
                 ctx.fillRect(x, y, size, size);
             }
             ctx.globalAlpha = 1;
+
+            // Ground
             ctx.fillStyle = colors.ground;
             ctx.fillRect(0, canvas.height - 50, canvas.width, 50);
+
+            // Ground line
             ctx.fillStyle = colors.groundLine;
             ctx.fillRect(0, canvas.height - 50, canvas.width, 4);
         }
@@ -234,32 +235,44 @@
         function drawCat() {
             ctx.save();
             ctx.translate(cat.x + cat.width / 2, cat.y + cat.height / 2);
+
+            // Rotate based on velocity
             cat.rotation = Math.min(Math.max(cat.velocity * 3, -30), 45);
             ctx.rotate(cat.rotation * Math.PI / 180);
+
             if (catImage.complete) {
                 ctx.drawImage(catImage, -cat.width / 2, -cat.height / 2, cat.width, cat.height);
             } else {
+                // Fallback circle
                 ctx.fillStyle = '#F0B90B';
                 ctx.beginPath();
                 ctx.arc(0, 0, cat.width / 2, 0, Math.PI * 2);
                 ctx.fill();
             }
+
             ctx.restore();
         }
 
         function drawPipes() {
             pipes.forEach(pipe => {
+                // Top pipe
                 ctx.fillStyle = colors.pipe;
                 ctx.fillRect(pipe.x, 0, pipeWidth, pipe.topHeight);
                 ctx.strokeStyle = colors.pipeBorder;
                 ctx.lineWidth = 3;
                 ctx.strokeRect(pipe.x, 0, pipeWidth, pipe.topHeight);
+
+                // Top pipe cap
                 ctx.fillRect(pipe.x - 5, pipe.topHeight - 20, pipeWidth + 10, 20);
                 ctx.strokeRect(pipe.x - 5, pipe.topHeight - 20, pipeWidth + 10, 20);
+
+                // Bottom pipe
                 const bottomY = pipe.topHeight + pipeGap;
                 ctx.fillStyle = colors.pipe;
                 ctx.fillRect(pipe.x, bottomY, pipeWidth, canvas.height - bottomY - 50);
                 ctx.strokeRect(pipe.x, bottomY, pipeWidth, canvas.height - bottomY - 50);
+
+                // Bottom pipe cap
                 ctx.fillRect(pipe.x - 5, bottomY, pipeWidth + 10, 20);
                 ctx.strokeRect(pipe.x - 5, bottomY, pipeWidth + 10, 20);
             });
@@ -268,36 +281,46 @@
         function drawStartScreen() {
             ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
+
             ctx.fillStyle = '#F0B90B';
             ctx.font = 'bold 32px Inter';
             ctx.textAlign = 'center';
-            ctx.fillText('Flappy Maxxer', canvas.width / 2, canvas.height / 2 - 40);
+            ctx.fillText('Flappy Maxxer', canvas.width / 2, canvas.height / 2 - 60);
+
             ctx.fillStyle = '#fff';
             ctx.font = '18px Inter';
-            ctx.fillText('Click to start!', canvas.width / 2, canvas.height / 2 + 10);
+            ctx.fillText('Click or press SPACE', canvas.width / 2, canvas.height / 2);
+            ctx.fillText('to start maxxing!', canvas.width / 2, canvas.height / 2 + 25);
+
+            // Draw cat preview
             if (catImage.complete) {
-                ctx.drawImage(catImage, canvas.width / 2 - 30, canvas.height / 2 + 30, 60, 60);
+                ctx.drawImage(catImage, canvas.width / 2 - 40, canvas.height / 2 + 50, 80, 80);
             }
         }
 
         function drawGameOver() {
             ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
+
             ctx.fillStyle = '#F0B90B';
             ctx.font = 'bold 36px Inter';
             ctx.textAlign = 'center';
-            ctx.fillText('REKT!', canvas.width / 2, canvas.height / 2 - 60);
+            ctx.fillText('REKT!', canvas.width / 2, canvas.height / 2 - 80);
+
             ctx.fillStyle = '#fff';
             ctx.font = 'bold 48px Inter';
-            ctx.fillText(score, canvas.width / 2, canvas.height / 2);
+            ctx.fillText(score, canvas.width / 2, canvas.height / 2 - 20);
+
             ctx.font = '16px Inter';
             ctx.fillStyle = '#888';
-            ctx.fillText('Score', canvas.width / 2, canvas.height / 2 + 25);
+            ctx.fillText('Score', canvas.width / 2, canvas.height / 2 + 10);
+
             if (score >= highScore && score > 0) {
                 ctx.fillStyle = '#F0B90B';
                 ctx.font = 'bold 20px Inter';
-                ctx.fillText('NEW HIGH SCORE!', canvas.width / 2, canvas.height / 2 + 60);
+                ctx.fillText('NEW HIGH SCORE!', canvas.width / 2, canvas.height / 2 + 50);
             }
+
             ctx.fillStyle = '#fff';
             ctx.font = '18px Inter';
             ctx.fillText('Click to try again', canvas.width / 2, canvas.height / 2 + 100);
@@ -307,41 +330,77 @@
             const minHeight = 50;
             const maxHeight = canvas.height - pipeGap - 100;
             const topHeight = Math.random() * (maxHeight - minHeight) + minHeight;
-            pipes.push({ x: canvas.width, topHeight: topHeight, passed: false });
+
+            pipes.push({
+                x: canvas.width,
+                topHeight: topHeight,
+                passed: false
+            });
         }
 
         function updateGame() {
             if (!gameRunning || gameOver) return;
+
+            // Increment start timer
             gameStartTimer++;
+
+            // Update cat with reduced gravity at start
             const currentGravity = gameStartTimer < graceFrames ? cat.gravity * 0.3 : cat.gravity;
             cat.velocity += currentGravity;
             cat.y += cat.velocity;
+
+            // Spawn pipes
             pipeSpawnTimer++;
             if (pipeSpawnTimer >= pipeSpawnInterval) {
                 spawnPipe();
                 pipeSpawnTimer = 0;
             }
+
+            // Update pipes
             pipes.forEach((pipe, index) => {
                 pipe.x -= pipeSpeed;
+
+                // Score
                 if (!pipe.passed && pipe.x + pipeWidth < cat.x) {
                     pipe.passed = true;
                     score++;
                     scoreDisplay.textContent = score;
                 }
-                if (pipe.x + pipeWidth < 0) pipes.splice(index, 1);
+
+                // Remove off-screen pipes
+                if (pipe.x + pipeWidth < 0) {
+                    pipes.splice(index, 1);
+                }
             });
+
+            // Collision detection
             checkCollision();
         }
 
         function checkCollision() {
-            if (cat.y + cat.height > canvas.height - 50 || cat.y < 0) { endGame(); return; }
+            // Ground collision
+            if (cat.y + cat.height > canvas.height - 50) {
+                endGame();
+                return;
+            }
+
+            // Ceiling collision
+            if (cat.y < 0) {
+                endGame();
+                return;
+            }
+
+            // Pipe collision
             pipes.forEach(pipe => {
                 const catRight = cat.x + cat.width - 10;
                 const catLeft = cat.x + 10;
                 const catTop = cat.y + 10;
                 const catBottom = cat.y + cat.height - 10;
+
                 if (catRight > pipe.x && catLeft < pipe.x + pipeWidth) {
-                    if (catTop < pipe.topHeight || catBottom > pipe.topHeight + pipeGap) endGame();
+                    if (catTop < pipe.topHeight || catBottom > pipe.topHeight + pipeGap) {
+                        endGame();
+                    }
                 }
             });
         }
@@ -349,6 +408,7 @@
         function endGame() {
             gameOver = true;
             gameRunning = false;
+
             if (score > highScore) {
                 highScore = score;
                 localStorage.setItem('flappyMaxxerHighScore', highScore);
@@ -370,8 +430,15 @@
         }
 
         function jump() {
-            if (gameOver) { resetGame(); return; }
-            if (!gameRunning) gameRunning = true;
+            if (gameOver) {
+                resetGame();
+                return;
+            }
+
+            if (!gameRunning) {
+                gameRunning = true;
+            }
+
             cat.velocity = cat.jumpStrength;
         }
 
@@ -379,15 +446,34 @@
             drawBackground();
             drawPipes();
             drawCat();
-            if (!gameRunning && !gameOver) drawStartScreen();
-            else if (gameOver) drawGameOver();
-            else updateGame();
+
+            if (!gameRunning && !gameOver) {
+                drawStartScreen();
+            } else if (gameOver) {
+                drawGameOver();
+            } else {
+                updateGame();
+            }
+
             requestAnimationFrame(gameLoop);
         }
 
+        // Event listeners
         canvas.addEventListener('click', jump);
-        document.addEventListener('keydown', (e) => { if (e.code === 'Space') { e.preventDefault(); jump(); } });
-        canvas.addEventListener('touchstart', (e) => { e.preventDefault(); jump(); });
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault();
+                jump();
+            }
+        });
+
+        // Touch support
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            jump();
+        });
+
+        // Start game loop
         gameLoop();
     </script>
 </body>
