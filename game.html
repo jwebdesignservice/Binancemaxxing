@@ -237,7 +237,7 @@
             ctx.translate(cat.x + cat.width / 2, cat.y + cat.height / 2);
 
             // Rotate based on velocity
-            cat.rotation = Math.min(Math.max(cat.velocity * 3, -30), 45);
+            cat.rotation = Math.min(Math.max(cat.velocity * 1.5, -15), 25);
             ctx.rotate(cat.rotation * Math.PI / 180);
 
             if (catImage.complete) {

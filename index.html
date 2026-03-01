@@ -234,7 +234,7 @@
         function drawCat() {
             ctx.save();
             ctx.translate(cat.x + cat.width / 2, cat.y + cat.height / 2);
-            cat.rotation = Math.min(Math.max(cat.velocity * 3, -30), 45);
+            cat.rotation = Math.min(Math.max(cat.velocity * 1.5, -15), 25);
             ctx.rotate(cat.rotation * Math.PI / 180);
             if (catImage.complete) {
                 ctx.drawImage(catImage, -cat.width / 2, -cat.height / 2, cat.width, cat.height);
