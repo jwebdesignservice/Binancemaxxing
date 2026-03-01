@@ -51,7 +51,7 @@ body {
 }
 
 .mascot-container {
-    margin-bottom: 30px;
+    margin-bottom: 15px;
 }
 
 .hero-mascot {
@@ -71,8 +71,8 @@ body {
     font-size: clamp(4rem, 14vw, 9rem);
     font-weight: 700;
     color: var(--black);
-    margin-bottom: 10px;
-    margin-top: -40px;
+    margin-bottom: 5px;
+    margin-top: -20px;
     text-align: center;
 }
 
@@ -84,6 +84,45 @@ body {
     opacity: 0.8;
     text-align: center;
     margin-top: 0;
+    margin-bottom: 25px;
+}
+
+.contract-address {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 12px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+}
+
+.contract-address:hover {
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+.contract-address span {
+    font-family: monospace;
+    font-size: 0.95rem;
+    color: var(--black);
+    font-weight: 600;
+}
+
+.contract-address .copy-icon {
+    width: 20px;
+    height: 20px;
+    fill: var(--black);
+}
+
+.contract-address.copied {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.contract-address.copied span::after {
+    content: " - Copied!";
+    color: #000;
 }
 
 /* Social Icons */
