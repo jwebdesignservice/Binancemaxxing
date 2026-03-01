@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
     <!-- Hero Section -->
@@ -43,12 +44,34 @@
     <section class="game-section">
         <h2 class="game-title">Play Flappy Maxxer</h2>
         <p class="game-subtitle">Click or press SPACE to flap</p>
-        <div class="game-wrapper">
-            <div class="score-display" id="scoreDisplay">0</div>
-            <canvas id="gameCanvas"></canvas>
+        <div class="game-content">
+            <div class="game-area">
+                <div class="game-canvas-wrapper">
+                    <div class="score-display" id="scoreDisplay">0</div>
+                    <canvas id="gameCanvas" width="600" height="400"></canvas>
+                </div>
+                <p class="high-score" id="highScore">High Score: 0</p>
+            </div>
+            <div class="leaderboard">
+                <h3>Leaderboard</h3>
+                <ul class="leaderboard-list" id="leaderboardList">
+                    <li><span class="rank">-</span><span class="name">Loading...</span><span class="lscore">-</span></li>
+                </ul>
+            </div>
         </div>
-        <p class="high-score" id="highScore">High Score: 0</p>
     </section>
+
+    <!-- Name Input Overlay -->
+    <div class="name-input-overlay" id="nameOverlay">
+        <div class="name-input-box">
+            <h2>New High Score!</h2>
+            <p>Score: <span id="finalScore">0</span></p>
+            <input type="text" id="playerName" placeholder="@yourhandle" maxlength="20">
+            <br>
+            <button onclick="submitScore()">Submit</button>
+            <button class="skip" onclick="closeNameInput()">Skip</button>
+        </div>
+    </div>
 
     <!-- Social Icons -->
     <section class="social-icons">
@@ -115,14 +138,6 @@
     </section>
 
 
-    <!-- Tweet Section -->
-    <section class="tweet-section">
-        <div class="tweet-container">
-            <div class="tweet-placeholder">
-                <p>Maxxers are hardcorе</p>
-            </div>
-        </div>
-    </section>
 
     <!-- Buy Section -->
     <section class="buy-section">
@@ -156,20 +171,75 @@
 
     <!-- Game Script -->
     <script>
+        // Supabase setup
+        const SUPABASE_URL = 'https://ljsmmpzffzlzlbvwefkj.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxqc21tcHpmZnpsemxidndlZmtqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzOTY4MDUsImV4cCI6MjA4Nzk3MjgwNX0.vhDoUi5lYN2U2hlb0FVzRofrBZwBO8SP1DjDOHSokcM';
+
+        let supabaseClient = null;
+        try {
+            if (window.supabase) {
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            }
+        } catch (e) {
+            console.log('Supabase not available');
+        }
+
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const scoreDisplay = document.getElementById('scoreDisplay');
         const highScoreDisplay = document.getElementById('highScore');
+        const leaderboardList = document.getElementById('leaderboardList');
+        const nameOverlay = document.getElementById('nameOverlay');
+        const finalScoreEl = document.getElementById('finalScore');
+        const playerNameInput = document.getElementById('playerName');
 
-        // Responsive canvas size
-        function setCanvasSize() {
-            const maxWidth = Math.min(1000, window.innerWidth - 40);
-            const maxHeight = Math.min(450, window.innerHeight * 0.5);
-            canvas.width = maxWidth;
-            canvas.height = maxHeight;
+        let pendingScore = 0;
+
+        // Fetch leaderboard
+        async function fetchLeaderboard() {
+            if (!supabaseClient) {
+                leaderboardList.innerHTML = '<li><span class="rank">-</span><span class="name">Offline</span><span class="lscore">-</span></li>';
+                return;
+            }
+            try {
+                const { data } = await supabaseClient.from('leaderboard').select('*').order('score', { ascending: false }).limit(10);
+                if (data && data.length > 0) {
+                    leaderboardList.innerHTML = data.map((e, i) => `<li><span class="rank">#${i+1}</span><span class="name">${e.name}</span><span class="lscore">${e.score}</span></li>`).join('');
+                } else {
+                    leaderboardList.innerHTML = '<li><span class="rank">-</span><span class="name">No scores yet</span><span class="lscore">-</span></li>';
+                }
+            } catch (e) {
+                leaderboardList.innerHTML = '<li><span class="rank">-</span><span class="name">Error</span><span class="lscore">-</span></li>';
+            }
         }
-        setCanvasSize();
-        window.addEventListener('resize', setCanvasSize);
+
+        async function submitScore() {
+            const name = playerNameInput.value.trim() || 'Anonymous';
+            if (supabaseClient) {
+                try { await supabaseClient.from('leaderboard').insert([{ name, score: pendingScore }]); } catch(e) {}
+            }
+            closeNameInput();
+            fetchLeaderboard();
+        }
+
+        function showNameInput(score) {
+            pendingScore = score;
+            finalScoreEl.textContent = score;
+            playerNameInput.value = '';
+            nameOverlay.style.display = 'flex';
+            playerNameInput.focus();
+        }
+
+        function closeNameInput() {
+            nameOverlay.style.display = 'none';
+        }
+
+        playerNameInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') submitScore(); });
+        fetchLeaderboard();
+
+        // Set canvas size explicitly
+        canvas.width = 600;
+        canvas.height = 400;
 
         // Game variables
         let gameRunning = false;
@@ -183,12 +253,12 @@
         // Cat properties
         const cat = {
             x: 80,
-            y: canvas.height / 2.5,
+            y: 150,
             width: 50,
             height: 50,
             velocity: 0,
             gravity: 0.5,
-            jumpStrength: -8,
+            jumpStrength: -6.5,
             rotation: 0
         };
 
@@ -236,7 +306,7 @@
             ctx.translate(cat.x + cat.width / 2, cat.y + cat.height / 2);
             cat.rotation = Math.min(Math.max(cat.velocity * 1.5, -15), 25);
             ctx.rotate(cat.rotation * Math.PI / 180);
-            if (catImage.complete) {
+            if (catImage.complete && catImage.naturalWidth > 0) {
                 ctx.drawImage(catImage, -cat.width / 2, -cat.height / 2, cat.width, cat.height);
             } else {
                 ctx.fillStyle = '#F0B90B';
@@ -269,13 +339,13 @@
             ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = '#F0B90B';
-            ctx.font = 'bold 32px Inter';
+            ctx.font = 'bold 32px Inter, sans-serif';
             ctx.textAlign = 'center';
             ctx.fillText('Flappy Maxxer', canvas.width / 2, canvas.height / 2 - 40);
             ctx.fillStyle = '#fff';
-            ctx.font = '18px Inter';
+            ctx.font = '18px Inter, sans-serif';
             ctx.fillText('Click to start!', canvas.width / 2, canvas.height / 2 + 10);
-            if (catImage.complete) {
+            if (catImage.complete && catImage.naturalWidth > 0) {
                 ctx.drawImage(catImage, canvas.width / 2 - 30, canvas.height / 2 + 30, 60, 60);
             }
         }
@@ -284,22 +354,22 @@
             ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = '#F0B90B';
-            ctx.font = 'bold 36px Inter';
+            ctx.font = 'bold 36px Inter, sans-serif';
             ctx.textAlign = 'center';
             ctx.fillText('REKT!', canvas.width / 2, canvas.height / 2 - 60);
             ctx.fillStyle = '#fff';
-            ctx.font = 'bold 48px Inter';
+            ctx.font = 'bold 48px Inter, sans-serif';
             ctx.fillText(score, canvas.width / 2, canvas.height / 2);
-            ctx.font = '16px Inter';
+            ctx.font = '16px Inter, sans-serif';
             ctx.fillStyle = '#888';
             ctx.fillText('Score', canvas.width / 2, canvas.height / 2 + 25);
             if (score >= highScore && score > 0) {
                 ctx.fillStyle = '#F0B90B';
-                ctx.font = 'bold 20px Inter';
+                ctx.font = 'bold 20px Inter, sans-serif';
                 ctx.fillText('NEW HIGH SCORE!', canvas.width / 2, canvas.height / 2 + 60);
             }
             ctx.fillStyle = '#fff';
-            ctx.font = '18px Inter';
+            ctx.font = '18px Inter, sans-serif';
             ctx.fillText('Click to try again', canvas.width / 2, canvas.height / 2 + 100);
         }
 
@@ -354,10 +424,13 @@
                 localStorage.setItem('flappyMaxxerHighScore', highScore);
                 highScoreDisplay.textContent = `High Score: ${highScore}`;
             }
+            if (score > 0) {
+                setTimeout(() => showNameInput(score), 500);
+            }
         }
 
         function resetGame() {
-            cat.y = canvas.height / 2.5;
+            cat.y = 150;
             cat.velocity = 0;
             cat.rotation = 0;
             pipes.length = 0;
@@ -388,6 +461,8 @@
         canvas.addEventListener('click', jump);
         document.addEventListener('keydown', (e) => { if (e.code === 'Space') { e.preventDefault(); jump(); } });
         canvas.addEventListener('touchstart', (e) => { e.preventDefault(); jump(); });
+
+        // Start game loop
         gameLoop();
     </script>
 </body>

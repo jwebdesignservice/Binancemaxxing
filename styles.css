@@ -234,9 +234,25 @@ body {
     margin-bottom: 30px;
 }
 
-.game-wrapper {
+.game-content {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.game-area {
+    flex: 0 0 70%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.game-canvas-wrapper {
     position: relative;
-    display: inline-block;
+    width: 100%;
 }
 
 .game-section .score-display {
@@ -253,18 +269,138 @@ body {
 }
 
 .game-section #gameCanvas {
+    display: block;
+    width: 100%;
+    height: auto;
     border: 4px solid var(--yellow);
     border-radius: 12px;
     box-shadow: 0 0 30px rgba(240, 185, 11, 0.3);
     cursor: pointer;
-    max-width: 100%;
+    background: #0a0a0a;
 }
 
 .game-section .high-score {
     color: var(--yellow);
     font-size: 1.2rem;
     font-weight: 600;
-    margin-top: 20px;
+    margin-top: 15px;
+}
+
+.leaderboard {
+    flex: 0 0 calc(30% - 30px);
+    background: #111;
+    border: 2px solid var(--yellow);
+    border-radius: 12px;
+    padding: 20px;
+    height: fit-content;
+}
+
+.leaderboard h3 {
+    color: var(--yellow);
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+}
+
+.leaderboard-list {
+    list-style: none;
+}
+
+.leaderboard-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #333;
+    color: #fff;
+    font-size: 0.95rem;
+}
+
+.leaderboard-list li:last-child {
+    border-bottom: none;
+}
+
+.leaderboard-list .rank {
+    color: var(--yellow);
+    font-weight: 700;
+    width: 30px;
+}
+
+.leaderboard-list .name {
+    flex: 1;
+    text-align: left;
+}
+
+.leaderboard-list .lscore {
+    font-weight: 600;
+    color: var(--yellow);
+}
+
+.name-input-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.9);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.name-input-box {
+    background: #111;
+    border: 3px solid var(--yellow);
+    border-radius: 16px;
+    padding: 30px;
+    text-align: center;
+}
+
+.name-input-box h2 {
+    color: var(--yellow);
+    margin-bottom: 10px;
+}
+
+.name-input-box p {
+    color: #888;
+    margin-bottom: 20px;
+}
+
+.name-input-box input {
+    background: #222;
+    border: 2px solid var(--yellow);
+    border-radius: 8px;
+    padding: 12px 20px;
+    color: #fff;
+    font-size: 1.1rem;
+    width: 200px;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.name-input-box input:focus {
+    outline: none;
+    box-shadow: 0 0 10px rgba(240,185,11,0.5);
+}
+
+.name-input-box button {
+    background: var(--yellow);
+    color: #000;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin: 5px;
+}
+
+.name-input-box button:hover {
+    transform: scale(1.05);
+}
+
+.name-input-box button.skip {
+    background: #333;
+    color: #888;
 }
 
 /* Degen Banner */
@@ -525,6 +661,23 @@ body {
         min-width: 300px;
         padding: 32px 70px;
         font-size: 2rem;
+    }
+
+    .game-content {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .game-area {
+        flex: 0 0 100%;
+        width: 100%;
+    }
+
+    .leaderboard {
+        flex: 0 0 100%;
+        width: 100%;
+        max-width: 400px;
+        margin-top: 20px;
     }
 }
 
