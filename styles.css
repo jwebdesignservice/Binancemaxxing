@@ -77,8 +77,8 @@ body {
 }
 
 .hero-logo {
-    max-width: 1000px;
-    width: 90%;
+    max-width: 1300px;
+    width: 95%;
     height: auto;
     margin-bottom: 20px;
     margin-top: -10px;
@@ -212,6 +212,20 @@ body {
     color: #b0b0b0;
     font-size: 1.15rem;
     line-height: 1.8;
+}
+
+/* Degen Banner */
+.degen-banner {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    line-height: 0;
+}
+
+.degen-banner img {
+    width: 100%;
+    height: auto;
+    display: block;
 }
 
 /* Action Buttons */
@@ -475,6 +489,11 @@ body {
         max-width: 280px;
     }
 
+    .hero-logo {
+        max-width: 500px;
+        width: 90%;
+    }
+
     .hero-title {
         font-size: clamp(2.5rem, 10vw, 4rem);
     }
@@ -608,6 +627,11 @@ body {
 
     .hero-mascot {
         max-width: 220px;
+    }
+
+    .hero-logo {
+        max-width: 320px;
+        width: 85%;
     }
 
     .hero-title {
