@@ -324,8 +324,17 @@
 
         async function submitScore() {
             const name = playerNameInput.value.trim() || 'Anonymous';
-            if (supabaseClient) {
-                try { await supabaseClient.from('leaderboard').insert([{ name, score: pendingScore }]); } catch(e) {}
+            // Validate score - max realistic score is around 100-200
+            const maxValidScore = 500;
+            if (supabaseClient && pendingScore > 0 && pendingScore <= maxValidScore) {
+                try {
+                    await supabaseClient.from('leaderboard').insert([{
+                        name: name.substring(0, 20),
+                        score: Math.floor(pendingScore)
+                    }]);
+                } catch(e) {
+                    console.error('Submit error:', e);
+                }
             }
             closeNameInput();
             fetchLeaderboard();
@@ -551,15 +560,16 @@
         function endGame() {
             gameOver = true;
             gameRunning = false;
+            const finalScore = score;
 
-            if (score > highScore) {
-                highScore = score;
+            if (finalScore > highScore) {
+                highScore = finalScore;
                 localStorage.setItem('flappyMaxxerHighScore', highScore);
                 highScoreDisplay.textContent = 'High Score: ' + highScore;
             }
 
-            if (score > 0) {
-                setTimeout(() => showNameInput(score), 500);
+            if (finalScore > 0) {
+                setTimeout(() => showNameInput(finalScore), 500);
             }
         }
 
