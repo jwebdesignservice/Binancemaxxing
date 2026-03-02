@@ -42,7 +42,7 @@
 
     <!-- Game Section -->
     <section class="game-section">
-        <h2 class="game-title">Play Flappy Maxxer</h2>
+        <h2 class="game-title">Maxxer Mini Game</h2>
         <p class="game-subtitle">Click or press SPACE to flap</p>
         <div class="game-content">
             <div class="game-area">
@@ -147,7 +147,7 @@
                 <p class="about-tagline">If you are reading this — you are already Binancemaxxing.</p>
             </div>
             <div class="about-image">
-                <img src="images/about-us.png" alt="Maxxer Trading">
+                <img src="images/about%20us.png" alt="Maxxer Trading">
             </div>
         </div>
     </section>
@@ -412,9 +412,6 @@
             ctx.fillStyle = '#fff';
             ctx.font = '18px Inter, sans-serif';
             ctx.fillText('Click to start!', canvas.width / 2, canvas.height / 2 + 10);
-            if (catImage.complete && catImage.naturalWidth > 0) {
-                ctx.drawImage(catImage, canvas.width / 2 - 30, canvas.height / 2 + 30, 60, 60);
-            }
         }
 
         function drawGameOver() {
